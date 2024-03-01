@@ -5,7 +5,7 @@ type ControllerType = (
   req: Request,
   res: Response,
   next: NextFunction
-) => Promise<void>;
+) => Promise<void> | Promise<string>;
 
 const getAllPosts: ControllerType = async (req, res, next) => {
   try {
@@ -20,16 +20,25 @@ const getAllPosts: ControllerType = async (req, res, next) => {
 const addPost: ControllerType = async (req, res, next) => {
   try {
     const newPostData = req.body;
+    const { titulo, descripcion, url } = req.body;
 
     const modifiedReqBody: Post = {
-      titulo: newPostData.titulo,
-      descripcion: newPostData.descripcion,
-      img: newPostData.url,
+      titulo: titulo,
+      descripcion: descripcion,
+      img: url,
     };
-    const newPost = await addNewPost(modifiedReqBody);
-    res.status(200).send("New post added successfully");
-    console.log("Added");
+    if (!titulo || !url || !descripcion) {
+      console.log("All fields must be filled in");
+      res.status(400).send("You should enter all the fields");
+      return;
+    } else {
+      const newPost = await addNewPost(modifiedReqBody);
+      res.status(200).send(`New post added successfully: ${newPost}`);
+      console.log("Added");
+    }
   } catch (error) {
+    if (error instanceof Error) console.log(error.message);
+
     res.status(500).json({ message: "Something went wrong" });
   }
 };

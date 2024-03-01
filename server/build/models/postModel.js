@@ -20,7 +20,8 @@ const addNewPost = async ({ titulo, img, descripcion }) => {
         const res = await pool.query(query);
     }
     catch (error) {
-        console.log(error);
+        if (error instanceof Error)
+            console.log(error.message);
     }
 };
 export { getPosts, addNewPost };
