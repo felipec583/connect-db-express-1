@@ -6,7 +6,6 @@ const getPosts = async () => {
       text: "SELECT * FROM posts",
     };
     const res = await pool.query(query);
-
     return res.rows;
   } catch (error) {
     console.log(error);

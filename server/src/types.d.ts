@@ -1,3 +1,5 @@
+import { Response, Request, NextFunction } from "express";
+
 interface Post {
   id?: number;
   titulo: string;
@@ -6,4 +8,10 @@ interface Post {
   likes?: number;
 }
 
-export { Post };
+type ControllerType = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => Promise<void> | Promise<string>;
+
+export { Post, ControllerType };

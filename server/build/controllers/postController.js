@@ -1,17 +1,19 @@
 import { getPosts, addNewPost } from "../models/postModel.js";
-const getAllPosts = async (req, res, next) => {
+const getAllPosts = async (_req, res, _next) => {
     try {
-        const posts = await getPosts();
-        res.status(200).json(posts);
+        const queryData = await getPosts();
+        if (!queryData) {
+            res.status(404).send("This entity does not exist");
+        }
+        res.status(200).json(queryData);
     }
     catch (error) {
         res.status(500).json({ message: "Something is wrong" });
         console.log(error);
     }
 };
-const addPost = async (req, res, next) => {
+const addPost = async (req, res, _next) => {
     try {
-        const newPostData = req.body;
         const { titulo, descripcion, url } = req.body;
         const modifiedReqBody = {
             titulo: titulo,
@@ -20,7 +22,7 @@ const addPost = async (req, res, next) => {
         };
         if (!titulo || !url || !descripcion) {
             console.log("All fields must be filled in");
-            res.status(400).send("You should enter all the fields");
+            res.status(400).json({ message: "You should enter all the fields" });
             return;
         }
         else {
